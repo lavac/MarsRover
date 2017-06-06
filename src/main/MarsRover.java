@@ -2,13 +2,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MarsRover {
-    private Position.Location coOrdinate;
-    private Position.Direction facedDirection;
+    static  Position.Location coOrdinate;
+     static Position.Direction facedDirection;
     private Map<Position.Location, Position.Direction> navigationMap = new HashMap<>();
 
+    MarsRover() {}
+
     MarsRover(int xCoOrdinate, int yCoordinate, Position.Direction facedDirection) {
+        if (xCoOrdinate >= 5 || yCoordinate >= 5 || xCoOrdinate < 0 || yCoordinate < 0)
+            throw new IndexOutOfBoundsException();
         coOrdinate = new Position.Location(xCoOrdinate, yCoordinate);
-        this.facedDirection = facedDirection;
+        if (facedDirection == null)
+            throw new NullPointerException();
+        MarsRover.facedDirection = facedDirection;
         initializeMap();
     }
 
@@ -27,11 +33,12 @@ public class MarsRover {
             }
         }
     }
+
     private Position.Direction rotate(Position.Direction.Rotation rotation) {
-        System.out.println("   " + rotation);
         facedDirection = facedDirection.rotate(rotation);
         return facedDirection;
     }
+
     Position.Direction navigatingAsPerInstruction(String instructions) {
         char[] instructionSet = instructions.toCharArray();
         for (char instruction : instructionSet) {
@@ -40,23 +47,27 @@ public class MarsRover {
             } else {
                 String rotateInstruction = Character.toString(instruction);
                 Position.Direction.Rotation rotation = Position.Direction.Rotation.valueOf((rotateInstruction));
-               facedDirection = rotate(rotation);
+                facedDirection = rotate(rotation);
             }
         }
-          return facedDirection;
+        return facedDirection;
     }
 
-    public static void main(String args[]) {
-        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.N);
-        marsRover.navigatingAsPerInstruction("LMLMLMLMM");
-    }
-
-     Position.Location getLocation() {
+    Position.Location getLocation() {
         return coOrdinate;
     }
 
-     Position.Direction getDirection() {
+    Position.Direction getDirection() {
         return facedDirection;
+    }
+
+    public static void main(String args[]) {
+        MarsRover marsRoverOne = new MarsRover(1, 2, Position.Direction.N);
+        marsRoverOne.navigatingAsPerInstruction("LMLMLMLMM");
+        System.out.println(coOrdinate.xCordinate + " " + coOrdinate.yCoOrdinate + " " + facedDirection);
+        MarsRover marsRoverTwo = new MarsRover(3, 3, Position.Direction.E);
+        marsRoverTwo.navigatingAsPerInstruction("MMRMMRMRRM");
+        System.out.println(coOrdinate.xCordinate + " " + coOrdinate.yCoOrdinate + " " + facedDirection);
     }
 }
 

@@ -1,8 +1,8 @@
 
- class Position {
+class Position {
+    private Location location;
+    private Direction direction;
 
-   private Location location;
-   private Direction direction;
     Position(Location location, Direction direction) {
         this.location = location;
         this.direction = direction;
@@ -18,24 +18,16 @@
         }
 
         Location(int x, int y) {
+            if (x >= 5 || y >= 5)
+                throw new IndexOutOfBoundsException();
             this.xCordinate = x;
             this.yCoOrdinate = y;
         }
 
-        public  Location(Position.Location locationToBeMove) {
-            xCordinate = locationToBeMove.xCordinate;
-            yCoOrdinate = locationToBeMove.yCoOrdinate;
-        }
-
-            void print(Position.Location location) {
-                System.out.println(location.xCordinate + location.yCoOrdinate);
-            }
-
-
     }
 
 
-    enum Direction {
+    public enum Direction {
         E() {
             @Override
             public Direction rotate(Direction.Rotation rotation) {

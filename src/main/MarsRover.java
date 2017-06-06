@@ -1,54 +1,63 @@
-/**
- * Created by lavanya on 6/5/17.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class MarsRover {
-    private int xCordinate;
-    private int yCordinate;
+    private Position.Location coOrdinate;
+    private Position.Direction facedDirection;
+    private Map<Position.Location, Position.Direction> navigationMap = new HashMap<>();
 
-    enum Direction {
-        E() {
-            @Override
-            public Direction next(Rotation rotation) {
-                return rotation == Rotation.R ? S : N;
-            }
-        },
-        W() {
-            @Override
-            public Direction next(Rotation rotation) {
-                return rotation == Rotation.R ? N : S;
-            }
-        },
-        S() {
-            @Override
-            public Direction next(Rotation rotation) {
-                return rotation == Rotation.R ? W : E;
-            }
-        },
-        N() {
-            @Override
-            public Direction next(Rotation rotation) {
-                System.out.println(rotation);
-                return rotation == Rotation.R ? E : W;
-            }
-        };
+    MarsRover(int xCoOrdinate, int yCoordinate, Position.Direction facedDirection) {
+        coOrdinate = new Position.Location(xCoOrdinate, yCoordinate);
+        this.facedDirection = facedDirection;
+        initializeMap();
+    }
 
-        public static Direction direction;
+    private void initializeMap() {
+        navigationMap.put(new Position.Location(0, 1), Position.Direction.N);
+        navigationMap.put(new Position.Location(0, -1), Position.Direction.S);
+        navigationMap.put(new Position.Location(1, 0), Position.Direction.E);
+        navigationMap.put(new Position.Location(-1, 0), Position.Direction.W);
+    }
 
-        abstract Direction next(Rotation rotation);
-
-        enum Rotation {
-            R, L
+    private void move() {
+        for (Map.Entry<Position.Location, Position.Direction> entry : navigationMap.entrySet()) {
+            if (entry.getValue().equals(facedDirection)) {
+                coOrdinate.xCordinate += entry.getKey().xCordinate;
+                coOrdinate.yCoOrdinate += entry.getKey().yCoOrdinate;
+            }
         }
     }
-
-    MarsRover(int xCordinate, int yCordinate, Direction direction) {
-        this.xCordinate = xCordinate;
-        this.yCordinate = yCordinate;
-        Direction.direction = direction;
+    private Position.Direction rotate(Position.Direction.Rotation rotation) {
+        System.out.println("   " + rotation);
+        facedDirection = facedDirection.rotate(rotation);
+        return facedDirection;
+    }
+    Position.Direction navigatingAsPerInstruction(String instructions) {
+        char[] instructionSet = instructions.toCharArray();
+        for (char instruction : instructionSet) {
+            if (instruction == 'M') {
+                move();
+            } else {
+                String rotateInstruction = Character.toString(instruction);
+                Position.Direction.Rotation rotation = Position.Direction.Rotation.valueOf((rotateInstruction));
+               facedDirection = rotate(rotation);
+            }
+        }
+          return facedDirection;
     }
 
-    Direction navigatingAsPerInstruction(Direction.Rotation rotation) {
-        return (Direction.direction.next(rotation));
+    public static void main(String args[]) {
+        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.N);
+        marsRover.navigatingAsPerInstruction("LMLMLMLMM");
     }
 
+     Position.Location getLocation() {
+        return coOrdinate;
+    }
+
+     Position.Direction getDirection() {
+        return facedDirection;
+    }
 }
+
+

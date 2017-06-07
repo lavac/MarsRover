@@ -2,7 +2,6 @@
 class Position {
     private Location location;
     private Direction direction;
-
     Position(Location location, Direction direction) {
         this.location = location;
         this.direction = direction;
@@ -10,19 +9,23 @@ class Position {
 
     static class Location {
         int xCordinate;
-        int yCoOrdinate;
+        int yCordinate;
 
-        public boolean equals(Object o) {
-            Location c = (Location) o;
-            return this.xCordinate == c.xCordinate && this.yCoOrdinate == c.yCoOrdinate;
+        public boolean equals(Object obj) {
+            Location location = (Location) obj;
+            if(!(location != null))
+                throw new IllegalArgumentException();
+            return this.xCordinate == location.xCordinate && this.yCordinate == location.yCordinate;
         }
 
         Location(int x, int y) {
             if (x >= 5 || y >= 5)
                 throw new IndexOutOfBoundsException();
             this.xCordinate = x;
-            this.yCoOrdinate = y;
+            this.yCordinate = y;
         }
+
+
 
     }
 
@@ -54,8 +57,6 @@ class Position {
             }
 
         };
-
-        public static Direction direction;
 
         abstract Direction rotate(Direction.Rotation rotation);
 

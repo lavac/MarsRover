@@ -1,20 +1,32 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
 
 public class MarsRover {
-    static  Position.Location coOrdinate;
-     static Position.Direction facedDirection;
+    private static Position.Location coOrdinate;
+    private static Position.Direction facedDirection;
+    static Plateau plateau;
     private Map<Position.Location, Position.Direction> navigationMap = new HashMap<>();
 
-    MarsRover() {}
-
-    MarsRover(int xCoOrdinate, int yCoordinate, Position.Direction facedDirection) {
-        if (xCoOrdinate >= 5 || yCoordinate >= 5 || xCoOrdinate < 0 || yCoordinate < 0)
+    private MarsRover(int xCoOrdinate, int yCoordinate, Position.Direction facedDirection) {
+        if (xCoOrdinate > plateau.getUpperXCordinate() || yCoordinate > plateau.getUpperYCordinate() || xCoOrdinate < 0 || yCoordinate < 0)
             throw new IndexOutOfBoundsException();
         coOrdinate = new Position.Location(xCoOrdinate, yCoordinate);
         if (facedDirection == null)
             throw new NullPointerException();
         MarsRover.facedDirection = facedDirection;
+        initializeMap();
+    }
+
+    MarsRover(int xCoOrdinate, int yCoordinate, Position.Direction facedDirection, Plateau plateau) {
+        if (xCoOrdinate > plateau.getUpperXCordinate() || yCoordinate > plateau.getUpperYCordinate() || xCoOrdinate < 0 || yCoordinate < 0)
+            throw new IndexOutOfBoundsException();
+        coOrdinate = new Position.Location(xCoOrdinate, yCoordinate);
+        if (facedDirection == null)
+            throw new NullPointerException();
+        MarsRover.facedDirection = facedDirection;
+        this.plateau = plateau;
         initializeMap();
     }
 
@@ -28,8 +40,10 @@ public class MarsRover {
     private void move() {
         for (Map.Entry<Position.Location, Position.Direction> entry : navigationMap.entrySet()) {
             if (entry.getValue().equals(facedDirection)) {
-                coOrdinate.xCordinate += entry.getKey().xCordinate;
-                coOrdinate.yCoOrdinate += entry.getKey().yCoOrdinate;
+                if (((coOrdinate.xCordinate += entry.getKey().xCordinate) > plateau.getUpperXCordinate()))
+                    throw new IndexOutOfBoundsException();
+                if (((coOrdinate.yCordinate += entry.getKey().yCordinate) > plateau.getUpperYCordinate()))
+                    throw new IndexOutOfBoundsException();
             }
         }
     }
@@ -62,12 +76,20 @@ public class MarsRover {
     }
 
     public static void main(String args[]) {
-        MarsRover marsRoverOne = new MarsRover(1, 2, Position.Direction.N);
-        marsRoverOne.navigatingAsPerInstruction("LMLMLMLMM");
-        System.out.println(coOrdinate.xCordinate + " " + coOrdinate.yCoOrdinate + " " + facedDirection);
-        MarsRover marsRoverTwo = new MarsRover(3, 3, Position.Direction.E);
-        marsRoverTwo.navigatingAsPerInstruction("MMRMMRMRRM");
-        System.out.println(coOrdinate.xCordinate + " " + coOrdinate.yCoOrdinate + " " + facedDirection);
+        Scanner in = new Scanner(System.in);
+        int xCordinate = in.nextInt();
+        int yCordinate = in.nextInt();
+        plateau = new Plateau(xCordinate, yCordinate);
+        for(int rover = 1; rover <= 2; rover++) {
+            int initialXCordinate = in.nextInt();
+            int initialYCordinate = in.nextInt();
+            String direction = in.next();
+            Position.Direction intialDirection = Position.Direction.valueOf(direction);
+            MarsRover marsRover = new MarsRover(initialXCordinate, initialYCordinate, intialDirection);
+            String instruction = in.next();
+            marsRover.navigatingAsPerInstruction(instruction);
+            System.out.println(coOrdinate.xCordinate + " " + coOrdinate.yCordinate + " " + facedDirection);
+        }
     }
 }
 

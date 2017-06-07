@@ -6,21 +6,24 @@ public class MarsRoverTest {
 
     @Test
     public void leftOfEastShouldBeNorth() {
-        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E, plateau);
         Position.Direction expectedDirection = Position.Direction.N;
         assertEquals(expectedDirection, marsRover.navigatingAsPerInstruction("L"));
     }
 
     @Test
     public void rightOfEastShouldBeSouth() {
-        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E, plateau);
         Position.Direction expectedDirection = Position.Direction.S;
         assertEquals(expectedDirection, marsRover.navigatingAsPerInstruction("R"));
     }
 
     @Test
     public void shouldMoveOneGridPerMove() {
-        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E, plateau);
         marsRover.navigatingAsPerInstruction("M");
         Position.Location expectedLocation = new Position.Location(2,2);
         assertEquals(expectedLocation, marsRover.getLocation());
@@ -28,7 +31,8 @@ public class MarsRoverTest {
 
     @Test
     public void locationOnPlateauShouldNotChangeWhenRoverRotates() {
-        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(1, 2, Position.Direction.E,plateau);
         marsRover.navigatingAsPerInstruction("RL");
         Position.Location expectedLocation = new Position.Location(1,2);
         assertEquals(expectedLocation, marsRover.getLocation());
@@ -36,7 +40,8 @@ public class MarsRoverTest {
 
     @Test
     public void directionOfRoverShouldNotChangeWhenHeMove() {
-        MarsRover marsRover = new MarsRover(1,2 , Position.Direction.E);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(1,2 , Position.Direction.E, plateau);
         marsRover.navigatingAsPerInstruction("MMM");
         Position.Direction expectedDirection = Position.Direction.E;
         assertEquals(expectedDirection, marsRover.getDirection());
@@ -44,7 +49,8 @@ public class MarsRoverTest {
 
     @Test
     public void shouldBeAbleToNavigate() {
-        MarsRover marsRoverOne = new MarsRover(1,2 , Position.Direction.N);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRoverOne = new MarsRover(1,2 , Position.Direction.N, plateau);
         marsRoverOne.navigatingAsPerInstruction("LMLMLMLMM");
         Position.Location expectedLocation = new Position.Location(1,3);
         Position.Direction expectedDirection = Position.Direction.N;
@@ -52,10 +58,19 @@ public class MarsRoverTest {
         assertEquals(expectedDirection, marsRoverOne.getDirection());
     }
 
-
     @Test(expected = IndexOutOfBoundsException.class)
     public void shouldNotBeAbleToNavigateOutOf() {
-        MarsRover marsRover = new MarsRover(5, 6, Position.Direction.E);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(2, 2, Position.Direction.E,plateau);
+        marsRover.navigatingAsPerInstruction("MMMMMMMMM");
+        Position.Direction expectedDirection = Position.Direction.E;
+        assertEquals(expectedDirection, marsRover.getDirection());
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void initialPositionShouldNotBeOutsideOfPlateau() {
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(5, 6, Position.Direction.E,plateau);
         marsRover.navigatingAsPerInstruction("MRL");
         Position.Direction expectedDirection = Position.Direction.E;
         assertEquals(expectedDirection, marsRover.getDirection());
@@ -63,7 +78,8 @@ public class MarsRoverTest {
 
     @Test(expected = NullPointerException.class)
     public void shouldNotAcceptNull() {
-        MarsRover marsRover = new MarsRover(1, 2, null);
+        Plateau plateau = new Plateau(5,5);
+        MarsRover marsRover = new MarsRover(1, 2, null,plateau);
         marsRover.navigatingAsPerInstruction("MRL");
         Position.Direction expectedDirection = Position.Direction.E;
         assertEquals(expectedDirection, marsRover.getDirection());

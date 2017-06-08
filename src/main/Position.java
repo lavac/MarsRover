@@ -1,59 +1,29 @@
-
 class Position {
-    private Location location;
-    private Direction direction;
-    Position(Location location, Direction direction) {
-        this.location = location;
-        this.direction = direction;
-    }
-
-    static class Location {
-        int xCordinate;
-        int yCordinate;
-
-        public boolean equals(Object obj) {
-            Location location = (Location) obj;
-            if(!(location != null))
-                throw new IllegalArgumentException();
-            return this.xCordinate == location.xCordinate && this.yCordinate == location.yCordinate;
-        }
-
-        Location(int x, int y) {
-            if (x >= 5 || y >= 5)
-                throw new IndexOutOfBoundsException();
-            this.xCordinate = x;
-            this.yCordinate = y;
-        }
-
-
-
-    }
-
 
     public enum Direction {
-        E() {
+        East("E") {
             @Override
             public Direction rotate(Direction.Rotation rotation) {
-                return rotation == Direction.Rotation.R ? S : N;
+                return rotation == Direction.Rotation.R ? South : North;
             }
         },
-        W() {
+        West("W") {
             @Override
             public Direction rotate(Direction.Rotation rotation) {
-                return rotation == Direction.Rotation.R ? N : S;
+                return rotation == Direction.Rotation.R ? North : South;
             }
         },
-        S() {
+        South("S") {
             @Override
             public Direction rotate(Direction.Rotation rotation) {
-                return rotation == Direction.Rotation.R ? W : E;
+                return rotation == Direction.Rotation.R ? West : East;
             }
 
         },
-        N() {
+        North("N") {
             @Override
             public Direction rotate(Direction.Rotation rotation) {
-                return rotation == Direction.Rotation.R ? E : W;
+                return rotation == Direction.Rotation.R ? East : West;
             }
 
         };
@@ -62,6 +32,20 @@ class Position {
 
         enum Rotation {
             R, L
+        }
+
+        String parameter;
+
+        Direction(String parameter){
+            this.parameter = parameter;
+        }
+
+        public static Direction fromString(String parameter){
+            for(Direction direction : Direction.values()){
+                if(parameter.equals(direction.parameter))
+                    return direction;
+            }
+            return null;
         }
     }
 
